@@ -22,6 +22,7 @@ public class EntityStat : MonoBehaviour
 
         public float Value;
     }
+    [System.Serializable]
     struct StatValue
     {
         public string Key;
