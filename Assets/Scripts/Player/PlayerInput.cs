@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerInput : MonoBehaviour
 {
     PlayerMovement movement;
+    playerAnimator animator;
 
     PlayerBattle battle;
 
@@ -13,6 +14,7 @@ public class PlayerInput : MonoBehaviour
     {
         movement = GetComponent<PlayerMovement>();
         battle = GetComponent<PlayerBattle>();
+        animator = GetComponent<playerAnimator>();
     }
 
     public void OnMove(InputValue value)
@@ -27,11 +29,13 @@ public class PlayerInput : MonoBehaviour
     }
     public void OnJump()
     {
-        movement.Jump();
+        if (movement.Jump())
+            animator.Jump();
     }
 
     public void OnAttack()
     {
         battle.Attack();
+        animator.Play("Attack1");
     }
 }
