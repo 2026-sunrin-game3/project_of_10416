@@ -6,7 +6,7 @@ public class PlayerInput : MonoBehaviour
 {
     PlayerMovement movement;
     playerAnimator animator;
-
+    int a = 1;
     PlayerBattle battle;
 
     public Vector2 axis;
@@ -35,7 +35,25 @@ public class PlayerInput : MonoBehaviour
 
     public void OnAttack()
     {
-        battle.Attack();
-        animator.Play("Attack1");
+        
+        if (a == 1)
+        {
+            if (battle.Attack())
+            {
+                animator.Play("Attack1");
+                a = 2;
+            }
+            
+        }
+        else if (a == 2)
+        {
+            if (battle.Attack())
+            {
+                animator.Play("Attack2");
+                a = 1;
+            }
+            
+        }
+        
     }
 }
