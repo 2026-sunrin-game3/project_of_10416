@@ -13,13 +13,25 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] LayerMask groundMask_;
     [SerializeField] float groundDist_ = 0.5f;
     [SerializeField] LayerMask enemyMask;
+
+    [SerializeField] DamageIndicator indicator;
     void Start()
     {
         health = GetComponent<EntityHealth>();
         stat = GetComponent<EntityStat>();
         rigid = GetComponent<Rigidbody2D>();
-    }
 
+        health.OnDamage(OnHurt);
+        health.OnDeath(OnDeath);
+    }
+    void OnDeath(EntityHealth.Context ctx)
+    {
+        Destroy(gameObject);
+    }
+    void OnHurt(EntityHealth.Context ctx)
+    {
+        indicator.IndicateDamage(ctx.damage, transform.position + new Vector3(Random.Range(-0.3f, 0.3f), 1), Color.magenta);
+    }
     void Update()
     {
         if (atkCool > 0)

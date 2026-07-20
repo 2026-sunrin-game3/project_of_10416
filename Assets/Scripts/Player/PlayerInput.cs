@@ -56,4 +56,12 @@ public class PlayerInput : MonoBehaviour
         }
         
     }
+    public void OnDash()
+    {
+        battle.Dash((int)animator.direction);
+    }
+    public void OnSkill1()
+    {
+        battle.Skill1();
+    }
 }
