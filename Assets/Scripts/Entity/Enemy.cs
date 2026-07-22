@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Enemy : MonoBehaviour
 {
@@ -13,19 +14,24 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] LayerMask groundMask_;
     [SerializeField] float groundDist_ = 0.5f;
     [SerializeField] LayerMask enemyMask;
+    [SerializeField] protected Slider bossbar;
 
     [SerializeField] DamageIndicator indicator;
+    protected EnemyAnimator animator;
     void Start()
     {
         health = GetComponent<EntityHealth>();
         stat = GetComponent<EntityStat>();
         rigid = GetComponent<Rigidbody2D>();
 
+        animator = GetComponent<EnemyAnimator>();
+
         health.OnDamage(OnHurt);
         health.OnDeath(OnDeath);
     }
     void OnDeath(EntityHealth.Context ctx)
     {
+        bossbar.value = 0;
         Destroy(gameObject);
     }
     void OnHurt(EntityHealth.Context ctx)
@@ -57,6 +63,7 @@ public abstract class Enemy : MonoBehaviour
 
     public void Move(Vector2 axis)
     {
+        animator.SetMoving(true, axis);
         float moveSpeed = stat.GetResultValue("moveSpeed");
         transform.Translate(axis.normalized * moveSpeed * Time.deltaTime);
     }
