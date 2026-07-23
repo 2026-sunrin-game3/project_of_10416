@@ -6,6 +6,9 @@ public class Boss : Enemy
 {
     [SerializeField]
     PlayerController player;
+    
+    [SerializeField] EntityHealth pl;
+    
     public float attackDist = 1.5f;
     [SerializeField] AttackRange defaultAttack;
 
@@ -26,6 +29,7 @@ public class Boss : Enemy
     float retreatTimer;
 
     bool inPattern;
+    bool pase2 = false;
 
    
     
@@ -36,7 +40,7 @@ public class Boss : Enemy
         jumpCool = jumpCoolTime;
         
     }
-
+   
     // Update is called once per frame
     protected override void MobUpdate()
     {
@@ -87,6 +91,7 @@ public class Boss : Enemy
     {
         inPattern = true;
         direction = player.transform.position.x > transform.position.x ? 1 : -1;
+        animator.Dash(direction);
         SetVelocity(Vector2.right * direction * dashPower);
 
         float t = 0f;
@@ -134,4 +139,20 @@ public class Boss : Enemy
         Draw(dashAttack);
         Draw(jumpAttack);
     }
+    protected override void Pase2()
+    {
+        if (pase2 == false)
+        {
+            StartCoroutine(domain());
+        }
+        pase2 = true;
+
+    }
+    IEnumerator domain()
+    {
+        
+        yield return new WaitForSeconds(3);
+        pl.GetDamage(300);
+    }
+    
 }

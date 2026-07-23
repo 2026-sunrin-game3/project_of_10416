@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rigid;
 
     EntityStat stat;
+    PlayerInput guard;
     public float jumpPower = 12f;
 
     [SerializeField] LayerMask groundMask_;
@@ -14,11 +15,16 @@ public class PlayerMovement : MonoBehaviour
     {
         stat = GetComponent<EntityStat>();
         rigid = GetComponent<Rigidbody2D>();
-    }
+        guard = GetComponent<PlayerInput>();
+  }
     public void Move(Vector2 axis)
     {
-        float moveSpeed = stat.GetResultValue("moveSpeed");
-        transform.Translate(axis.normalized * moveSpeed * Time.deltaTime);
+        if (!guard.blocking)
+        {
+            float moveSpeed = stat.GetResultValue("moveSpeed");
+            transform.Translate(axis.normalized * moveSpeed * Time.deltaTime);
+        }
+        
     }
 
     public void SetVelocity(Vector2 dir)

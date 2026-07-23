@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,10 +7,11 @@ public abstract class Enemy : MonoBehaviour
     public EntityHealth health;
     public EntityStat stat;
     public Rigidbody2D rigid;
+   
 
     public float direction;
     public float atkCool;
-
+    float a = 0;
     
     [SerializeField] LayerMask groundMask_;
     [SerializeField] float groundDist_ = 0.5f;
@@ -43,8 +45,18 @@ public abstract class Enemy : MonoBehaviour
         if (atkCool > 0)
             atkCool -= Time.deltaTime * (1 + stat.GetResultValue("atkSpeed") / 100);
         MobUpdate();
+        if (health.health < health.maxHealth/3 && a == 0)
+        {
+            Pase2();
+            animator.Play("Domain");
+            a = 1;
+        }
     }
     protected virtual void MobUpdate()
+    {
+
+    }
+    protected virtual void Pase2()
     {
 
     }
@@ -104,6 +116,8 @@ public abstract class Enemy : MonoBehaviour
 
         foreach (var target in col)
         {
+            
+            animator.Play("Attack");
             EntityHealth hp = target.GetComponent<EntityHealth>();
             if (hp != null)
             {

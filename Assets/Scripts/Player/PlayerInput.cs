@@ -6,8 +6,12 @@ public class PlayerInput : MonoBehaviour
 {
     PlayerMovement movement;
     playerAnimator animator;
-    int a = 1;
+    public int a = 1;
+    public bool blocking = false;
     PlayerBattle battle;
+    [SerializeField] RikaAnimator rika_ani;
+    [SerializeField] EntityHealth health;
+    
 
     public Vector2 axis;
     private void Awake()
@@ -35,13 +39,20 @@ public class PlayerInput : MonoBehaviour
 
     public void OnAttack()
     {
-        
+       
         if (a == 1)
         {
             if (battle.Attack())
             {
                 animator.Play("Attack1");
                 a = 2;
+                if (battle.full_emergence)
+                {
+                    rika_ani.play("Attack");
+                   
+
+                }
+
             }
             
         }
@@ -63,5 +74,10 @@ public class PlayerInput : MonoBehaviour
     public void OnSkill1()
     {
         battle.Skill1();
+    }
+    void Update()
+    {
+        blocking = Keyboard.current.fKey.isPressed;
+        animator.Guard();
     }
 }

@@ -1,8 +1,10 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 [System.Serializable]
 public struct AttackRange
@@ -17,10 +19,17 @@ public class PlayerBattle : MonoBehaviour
     public PlayerMovement movement;
     public EntityStat stat;
     public playerAnimator animator;
+    public PlayerInput input;
+    [SerializeField] Rika rika;
+    [SerializeField] Ring ring;
+    [SerializeField] Hide love;
+
 
     [SerializeField] DamageIndicator indicator;
 
     public float atkCool;
+
+    public bool full_emergence = false;
     
 
     public AttackRange defaultAttack;
@@ -35,8 +44,11 @@ public class PlayerBattle : MonoBehaviour
         stat = GetComponent<EntityStat>();
         animator = GetComponent<playerAnimator>();
         movement = GetComponent<PlayerMovement>();
+        input = GetComponent<PlayerInput>();
+        
 
         health.OnDamage(OnHurt);
+        rika.gameObject.SetActive(false);
     }
 
     void OnHurt(EntityHealth.Context ctx)
@@ -53,11 +65,14 @@ public class PlayerBattle : MonoBehaviour
         if (atkCool > 0)
             atkCool -= Time.deltaTime * (1 + stat.GetResultValue("atkSpeed") / 100);
         defaultAttack.offset.x = animator.direction;
+        if (health.isDeath) Destroy(gameObject);
+        
+        
     }
 
     public void Dash(int direction)
     {
-        StartCoroutine(dash_(direction));
+         StartCoroutine(dash_(direction));
     }
     IEnumerator dash_(int direction) {
         inDash = true;
@@ -81,21 +96,42 @@ public class PlayerBattle : MonoBehaviour
             if (hp != null)
             {
                 hp.GetDamage(stat.GetResultValue("attackDamage"), health);
+                if (full_emergence && input.a == 1)
+                {
+                    for (int i = 0; i< 3; i++)
+                    {
+                        hp.GetDamage(5, health);
+                    }
+                    
+                    
+                }
             }
         }
         return true;
     }
     public void Skill1()
     {
-        StartCoroutine(skill1_());
+        if (full_emergence == false) { 
+            StartCoroutine(skill1_());
+        }
+        else if(full_emergence == true)
+        {
+            StartCoroutine(purelove_());
+        }
+        
     }
     IEnumerator skill1_()
     {
+        full_emergence = true;
+        rika.gameObject.SetActive(true);
+        rika.Full_Emergence();
+        ring.Full_Emegence();
+        love.Show();
         var atkBuf = new EntityStat.Buf
         {
             Key = "attackDamage",
             mathType = MathType.Increase,
-            Value = 60
+            Value = 5
         };
         var atkspeedBuf = new EntityStat.Buf
         {
@@ -110,11 +146,12 @@ public class PlayerBattle : MonoBehaviour
 
         yield return new WaitForSeconds(5);
 
-        stat.bufs.Remove(atkBuf);
-        stat.bufs.Remove(atkspeedBuf);
-        stat.Calc("attackDamage");
-        stat.Calc("atkSpeed");
+       
             
+    }
+    IEnumerator purelove_()
+    {
+        yield return new WaitForSeconds(3);
     }
     void Draw(AttackRange range) 
     {

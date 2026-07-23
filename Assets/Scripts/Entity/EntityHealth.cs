@@ -5,6 +5,8 @@ using UnityEngine;
 public class EntityHealth : MonoBehaviour
 {
     EntityStat stat;
+    PlayerInput guard;
+    playerAnimator animator;
     
     public float health, maxHealth;
 
@@ -46,9 +48,12 @@ public class EntityHealth : MonoBehaviour
     {
         stat = GetComponent<EntityStat>();
         ResetHealth();
+        guard = GetComponent<PlayerInput>();
+        animator = GetComponent<playerAnimator>();
     }
     public void GetDamage(float damage, EntityHealth attacker = null)
     {
+      
         if (isDeath)
             return;
         Context ctx = new Context();
@@ -57,6 +62,13 @@ public class EntityHealth : MonoBehaviour
 
         float critPer = 0, critMul = 0, inc = 0;
 
+        if (guard != null && guard.blocking)
+        {
+           
+            ctx.damage /= 3f;
+            animator.series_guard += 1;
+
+        }
         foreach (var c in onDamageEv)
         {
             c.Invoke(ctx);
@@ -85,7 +97,10 @@ public class EntityHealth : MonoBehaviour
         dmg -= stat.GetResultValue("defense");
         if (dmg < 0)
             dmg = 0;
+        
         health -= dmg;
+       
+        
 
         if (health <= 0)
         {

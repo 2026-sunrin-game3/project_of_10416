@@ -32,8 +32,17 @@ public class EnemyAnimator : MonoBehaviour
     public void Jump(float axis)
     {
         animator.SetTrigger("Jump");
-        transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * direction, transform.localScale.y);
+        transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * axis, transform.localScale.y);
 
+    }
+    public void Dash(float axis)
+    {
+        animator.SetTrigger("IsDash");
+        transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * axis, transform.localScale.y);
+    }
+    public void Play(string id)
+    {
+        animator.Play(id);
     }
     void Update()
     {
