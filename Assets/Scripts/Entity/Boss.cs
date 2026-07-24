@@ -30,15 +30,16 @@ public class Boss : Enemy
 
     bool inPattern;
     bool pase2 = false;
+    [SerializeField] GameObject target;
 
    
     
     void Awake()
     {
         // 스폰하자마자 패턴이 터지지 않도록 쿨타임을 채워둔 채로 시작
+        target.gameObject.SetActive(false);
         dashCool = dashCoolTime;
         jumpCool = jumpCoolTime;
-        
     }
    
     // Update is called once per frame
@@ -150,9 +151,16 @@ public class Boss : Enemy
     }
     IEnumerator domain()
     {
-        
-        yield return new WaitForSeconds(3);
-        pl.GetDamage(300);
+
+        target.gameObject.SetActive(true);
+        for (int i = 0; i < 10; i++)
+        {
+            
+            pl.GetDamage(30);
+            yield return new WaitForSeconds(0.2f);
+        }
+        target.gameObject.SetActive(false);
+
     }
     
 }

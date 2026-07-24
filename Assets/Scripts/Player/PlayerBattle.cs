@@ -23,6 +23,8 @@ public class PlayerBattle : MonoBehaviour
     [SerializeField] Rika rika;
     [SerializeField] Ring ring;
     [SerializeField] Hide love;
+    [SerializeField] GameObject lovebeam;
+    [SerializeField] Transform player;
 
 
     [SerializeField] DamageIndicator indicator;
@@ -30,6 +32,7 @@ public class PlayerBattle : MonoBehaviour
     public float atkCool;
 
     public bool full_emergence = false;
+    float dir;
     
 
     public AttackRange defaultAttack;
@@ -49,6 +52,7 @@ public class PlayerBattle : MonoBehaviour
 
         health.OnDamage(OnHurt);
         rika.gameObject.SetActive(false);
+        lovebeam.gameObject.SetActive(false);
     }
 
     void OnHurt(EntityHealth.Context ctx)
@@ -151,6 +155,14 @@ public class PlayerBattle : MonoBehaviour
     }
     IEnumerator purelove_()
     {
+        Vector2 axis = input.axis;
+        
+        if (axis.x > 0) dir = 1;
+        else if (axis.x < 0) dir = -1;
+        Vector3 offset = new Vector2(1.2f*dir, 2f);
+        lovebeam.transform.position = player.position + offset;
+        lovebeam.gameObject.SetActive(true);
+        
         yield return new WaitForSeconds(3);
     }
     void Draw(AttackRange range) 
@@ -163,6 +175,7 @@ public class PlayerBattle : MonoBehaviour
 
     void OnDrawGizmos() 
     {
+        
         Draw(defaultAttack);
     }
     
